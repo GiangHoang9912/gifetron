@@ -17,13 +17,13 @@ function createWindow() {
   })
 
   // and load the index.html of the app.
-  win.loadFile('index.html');
+  win.loadFile('./search/index.html');
 
 
   // Open the DevTools.
 
   ipcMain.on('open-favorites', async (event, arg) => {
-    win.loadFile('favorites.html');
+    win.loadFile('./favorites/favorites.html');
     const result = await fetchGifs(arg);
     event.reply('reply-fetch-favorites', result);
   })
@@ -31,13 +31,13 @@ function createWindow() {
   ipcMain.on('open-search', async (event, arg) => {
     // const result = await fetchGifs(arg);
     // event.reply('reply-fetch-favorites', result)
-    win.loadFile('index.html');
+    win.loadFile('./search/index.html');
   })
   //
   ipcMain.on('open-upload', async (event, arg) => {
     // const result = await fetchGifs(arg);
     // event.reply('reply-fetch-favorites', result)
-    win.loadFile('upload.html');
+    win.loadFile('./upload/upload.html');
   })
   ipcMain.on('upload-command', async (event, arg) => {
     dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })

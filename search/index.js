@@ -1,7 +1,7 @@
 const btnFetch = document.querySelector('#fetch_btn');
 const { ipcRenderer, dialog } = require('electron');
 const divDisplay = document.querySelector('.display');
-const { allStorage } = require('./storageApi')
+const { allStorage } = require('../storageApi')
 document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`
 
 btnFetch.addEventListener('click', (e) => {

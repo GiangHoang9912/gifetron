@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const { allStorage } = require('./storageApi')
+const { allStorage } = require('../storageApi')
 
 document.querySelector('#openDialog').addEventListener('click', (e) => {
   e.preventDefault();

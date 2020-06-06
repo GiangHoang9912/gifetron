@@ -1,6 +1,6 @@
 'use strict'
 const { ipcRenderer } = require('electron');
-const { allStorage } = require('./storageApi');
+const { allStorage } = require('../storageApi');
 const divDisplay = document.querySelector('.display');
 let arrDownloadUrls = [];
 
