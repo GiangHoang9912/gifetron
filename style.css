@@ -1,0 +1,31 @@
+.display{
+  display: flex;
+  flex-wrap: wrap;
+}
+.gifImg{
+  margin: 0.9rem;
+  display: block;
+  background-size: cover;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 200px;
+  width: 287px;
+  cursor: pointer;
+}
+.gifImg:hover{
+  zoom: 102%;
+}
+
+
+@import url('https://fonts.googleapis.com/css?family=Public+Sans&display=swap');
+
+body {
+  margin: 0;
+  font-size: 16px;
+  font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

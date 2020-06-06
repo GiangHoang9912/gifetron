@@ -1,0 +1,19 @@
+{
+  "name": "gifetron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "electron": "9.0.2",
+    "fs-extra": "^9.0.1",
+    "node-fetch": "^2.6.0"
+  }
+}
