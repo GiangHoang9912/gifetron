@@ -1,7 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { fetchGifSearch, fetchGifs } = require('./app.js');
 const fs = require('fs-extra')
 const Axios = require('axios')
+const https = require('https');
+const UPLOAD_ROOT = 'https://upload.giphy.com/v1/gifs';
 
 
 function createWindow() {
@@ -31,7 +33,18 @@ function createWindow() {
     // event.reply('reply-fetch-favorites', result)
     win.loadFile('index.html');
   })
-
+  //
+  ipcMain.on('open-upload', async (event, arg) => {
+    // const result = await fetchGifs(arg);
+    // event.reply('reply-fetch-favorites', result)
+    win.loadFile('upload.html');
+  })
+  ipcMain.on('upload-command', async (event, arg) => {
+    dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+      .then(path => {
+        post(path);
+      })
+  })
 }
 
 // This method will be called when Electron has finished
@@ -61,6 +74,14 @@ app.on('activate', () => {
 ipcMain.on('fetch-command', async (event, arg) => {
   const result = await fetchGifSearch(arg)
   event.reply('reply-fetch-command', result)
+})
+
+//
+ipcMain.on('download-image', (event, arg) => {
+  fs.ensureDir('./images', err => {
+    console.log(err)
+    https.get(arg.url, res => res.pipe(fs.createWriteStream(`./images/gif_${arg.id}.jpg`)))
+  })
 })
 
 ipcMain.on('download-favorites', (event, arg) => {
@@ -120,7 +141,7 @@ const post = async (path) => {
       json: true
     }
 
-    axios.post(option.url, option.formData)
+    Axios.post(option.url, option.formData)
       .then((res) => {
         console.log(`statusCode: ${res.statusCode}`);
       })

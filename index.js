@@ -42,13 +42,31 @@ ipcRenderer.on('reply-fetch-command', (event, arg) => {
         }
       }
     }
-    console.log(check);
     if (!check) {
       const divGif = document.createElement('div');
       divGif.setAttribute('id', images[j].id);
-      divGif.setAttribute('class', 'gifImg')
+      divGif.setAttribute('class', 'container')
       divGif.style.backgroundImage = `url('${images[j].url}')`;
+
+      const divBtnDown = document.createElement('div');
+      divBtnDown.setAttribute('class', 'button');
+      const aTagDown = document.createElement('a');
+      aTagDown.setAttribute('href', '#')
+      aTagDown.innerText = 'D0wnl0ad'
+      divBtnDown.appendChild(aTagDown);
+
+
+      aTagDown.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('d')
+        ipcRenderer.send('download-image', { id: images[j].id, url: images[j].url });
+      })
+
+      divGif.appendChild(divBtnDown)
+
       divDisplay.appendChild(divGif);
+
       divGif.addEventListener('click', (e) => {
         e.preventDefault();
         if (localStorage.getItem('bookmark-' + divGif.getAttribute('id'))) {

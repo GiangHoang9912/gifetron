@@ -3,15 +3,7 @@
   flex-wrap: wrap;
 }
 .gifImg{
-  margin: 0.9rem;
-  display: block;
-  background-size: cover;
-  position: relative;
-  background-repeat: no-repeat;
-  background-position: center center;
-  height: 200px;
-  width: 287px;
-  cursor: pointer;
+  
 }
 .gifImg:hover{
   zoom: 102%;
@@ -29,3 +21,40 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.container {
+  margin: 0.9rem;
+  display: block;
+  background-size: cover;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 200px;
+  width: 287px;
+  cursor: pointer;
+}
+
+
+.button {
+  position: absolute;
+
+  left:70px;
+  top: 80px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.button a {
+  width: 200px;
+  padding: 12px 48px;
+  text-align: center;
+  color: white;
+  border: solid 2px white;
+  z-index: 1;
+}
+
+.container:hover .button {
+  opacity: 1;
+}
+

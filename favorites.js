@@ -12,7 +12,7 @@ ipcRenderer.on('reply-fetch-favorites', (event, arg) => {
   for (const image of arg.images) {
     const divGif = document.createElement('div');
     divGif.setAttribute('id', image.id);
-    divGif.setAttribute('class', 'gifImg')
+    divGif.setAttribute('class', 'container')
     divGif.style.backgroundImage = `url('${image.url}')`;
     divDisplay.appendChild(divGif);
     divGif.addEventListener('click', (e) => {
