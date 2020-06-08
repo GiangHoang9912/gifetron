@@ -1,6 +1,7 @@
 const API_ROOT = 'https://api.giphy.com/v1/gifs'
 const API_KEY = '4adlDmQdqYPDNjGt2C6fFxbJHxrNj9Uj'
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
+const fetch = require('electron-main-fetch')
 
 
 const searchLimit = 8
@@ -13,7 +14,7 @@ const createGetGifsUrl = (ids) => `${API_ROOT}?api_key=${API_KEY}&ids=${ids.join
 
 const extractAPIResponse = async (response) => {
   const { data, pagination } = await response.json()
-
+2
 
   const images = data.map(image => ({
     id: image.id,
@@ -24,6 +25,7 @@ const extractAPIResponse = async (response) => {
   const isLastPage = total_count === offset + count;
 
   offsetCurrent += searchLimit;
+
 
   return { images, isLastPage }
 }

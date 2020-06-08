@@ -80,6 +80,13 @@ ipcRenderer.on('reply-fetch-command', (event, arg) => {
   }
 })
 
-
+//Element.scrollHeight - Element.scrollTop === Element.clientHeight
+const body = document.querySelector("html");
+onscroll = (e) => {
+  e.preventDefault();
+  if (body.scrollHeight - body.scrollTop === body.clientHeight) {
+    ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
+  }
+}
 
 module.exports = { allStorage };

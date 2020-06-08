@@ -13,7 +13,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: "./icon.png"
   })
 
   // and load the index.html of the app.
@@ -23,7 +24,7 @@ function createWindow() {
   // Open the DevTools.
 
   ipcMain.on('open-favorites', async (event, arg) => {
-    win.loadFile('./favorites/favorites.html');
+    await win.loadFile('./favorites/favorites.html');
     const result = await fetchGifs(arg);
     event.reply('reply-fetch-favorites', result);
   })
@@ -103,11 +104,6 @@ async function downloadImage(url, path) {
   })
 
   response.data.pipe(writer)
-
-  return new Promise((resolve, reject) => {
-    writer.on('finish', resolve)
-    writer.on('error', reject)
-  })
 }
 
 
