@@ -35,15 +35,17 @@ body {
     left: 70px;
     top: 80px;
     text-align: center;
+    background-color: aliceblue;
     opacity: 0;
     transition: opacity .35s ease;
 }
 
 .button a {
+  background-color: aliceblue;
     width: 200px;
     padding: 12px 48px;
     text-align: center;
-    color: white;
+    color: black;
     border: solid 2px white;
     z-index: 1;
 }
@@ -82,8 +84,36 @@ body {
 }
 
 #txtSearch,
-#fetch_btn,
 #btn_download {
     margin-left: 3rem;
     height: 30px;
+}
+
+body{
+  display: flex;
+  flex-direction: column;
+}
+
+#fetch_btn{
+  width: 150px;
+  height: 35px;
+  margin: auto;
+  margin-bottom: 3rem;
+}
+
+button{
+  cursor: pointer;
+}
+
+.imgLike{
+  width: 63px;
+  height: 63px;
+  opacity: 0;
+}
+
+
+.imgLike:hover{
+  width: 63px;
+  height: 63px;
+  opacity: 1;
 }

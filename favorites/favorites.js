@@ -5,16 +5,29 @@ const { allStorage } = require('../storageApi');
 const divDisplay = document.querySelector('.display');
 let arrDownloadUrls = [];
 
+const allStorageGif = allStorage();
+
+ipcRenderer.send('tao-muon-load', allStorageGif)
+
 
 document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`
 
 ipcRenderer.on('reply-fetch-favorites', (event, arg) => {
+  console.log('@listen reply')
   arrDownloadUrls = arg.images;
   for (const image of arg.images) {
     const divGif = document.createElement('div');
     divGif.setAttribute('id', image.id);
     divGif.setAttribute('class', 'container')
     divGif.style.backgroundImage = `url('${image.url}')`;
+
+    const imgLike = document.createElement('img');
+    imgLike.setAttribute('class', 'imgLike');
+    imgLike.src = '../download.png';
+    imgLike.style.opacity = 1;
+
+    divGif.appendChild(imgLike)
+
     divDisplay.appendChild(divGif);
     divGif.addEventListener('click', (e) => {
       e.preventDefault();

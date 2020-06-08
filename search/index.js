@@ -1,14 +1,25 @@
 const btnFetch = document.querySelector('#fetch_btn');
 const { ipcRenderer, dialog } = require('electron');
 const divDisplay = document.querySelector('.display');
+const textInput = document.querySelector('#txtSearch');
 const { allStorage } = require('../storageApi')
-document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`
+const gifLoad = "https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif";
+
+document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`;
+
 
 btnFetch.addEventListener('click', (e) => {
   e.preventDefault();
+  btnFetch.disabled = true;
   const txtSearch = document.querySelector('#txtSearch').value;
   ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
 })
+
+textInput.addEventListener('click', (e) => {
+  e.preventDefault();
+  console.log(textInput.value)
+})
+
 
 document.querySelector('form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -17,10 +28,14 @@ document.querySelector('form').addEventListener('submit', (e) => {
   ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": true });
 })
 
+ipcRenderer.on('start-loading', (event, arg) => {
+  console.log(arg)
+})
+
 document.querySelector('#tab-favorites').addEventListener('click', (e) => {
   e.preventDefault();
-  const allStorageGif = allStorage();
-  ipcRenderer.send('open-favorites', allStorageGif)
+
+  ipcRenderer.send('open-favorites')
 })
 
 document.querySelector('#tab-upload').addEventListener('click', (e) => {
@@ -46,7 +61,33 @@ ipcRenderer.on('reply-fetch-command', (event, arg) => {
       const divGif = document.createElement('div');
       divGif.setAttribute('id', images[j].id);
       divGif.setAttribute('class', 'container')
-      divGif.style.backgroundImage = `url('${images[j].url}')`;
+      divGif.style.backgroundImage = `url('${gifLoad}')`;
+
+
+
+
+      const img = document.createElement('img');
+      img.src = images[j].url;
+      img.style.display = 'none';
+
+      divGif.appendChild(img)
+
+      const imgLike = document.createElement('img');
+      imgLike.setAttribute('class', 'imgLike');
+      imgLike.src = '../download.png';
+
+      divGif.appendChild(imgLike)
+
+      if (divGif.getAttribute('id') === localStorage.getItem(`bookmark-${images[j].id}`)) {
+        imgLike.style.opacity = 1;
+      }
+
+      img.onload = (e) => {
+        console.log(`Image ${images[j].id} ready to append`);
+        divGif.style.backgroundImage = `url('${images[j].url}')`;
+      }
+
+
 
       const divBtnDown = document.createElement('div');
       divBtnDown.setAttribute('class', 'button');
@@ -71,22 +112,36 @@ ipcRenderer.on('reply-fetch-command', (event, arg) => {
         e.preventDefault();
         if (localStorage.getItem('bookmark-' + divGif.getAttribute('id'))) {
           localStorage.removeItem('bookmark-' + divGif.getAttribute('id'));
+          imgLike.style.opacity = 0;;
         } else {
           localStorage.setItem('bookmark-' + divGif.getAttribute('id'), divGif.getAttribute('id'));
+          imgLike.style.opacity = 1;
         }
         document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`
       })
     }
   }
+  btnFetch.disabled = false;
 })
 
+let count = 1;
 //Element.scrollHeight - Element.scrollTop === Element.clientHeight
-const body = document.querySelector("html");
 onscroll = (e) => {
   e.preventDefault();
-  if (body.scrollHeight - body.scrollTop === body.clientHeight) {
-    ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
-  }
+  // if (body.scrollHeight - body.scrollTop === body.clientHeight) {
+  //   ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
+  // }
+
+  observer.observe(document.querySelector("#fetch_btn"));
+
 }
+
+const observer = new IntersectionObserver(function (entries) {
+  if (entries[0].isIntersecting === true) {
+    ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
+    console.log('Element is fully visible in screen');
+  }
+}, { threshold: [1] });
+
 
 module.exports = { allStorage };

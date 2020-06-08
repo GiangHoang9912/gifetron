@@ -3,7 +3,9 @@ const { fetchGifSearch, fetchGifs } = require('./app.js');
 const fs = require('fs-extra')
 const Axios = require('axios')
 const https = require('https');
+const pLimit = require('p-limit');
 const UPLOAD_ROOT = 'https://upload.giphy.com/v1/gifs';
+
 
 
 function createWindow() {
@@ -23,9 +25,13 @@ function createWindow() {
 
   // Open the DevTools.
 
-  ipcMain.on('open-favorites', async (event, arg) => {
-    await win.loadFile('./favorites/favorites.html');
+  ipcMain.on('open-favorites', (event, arg) => {
+    win.loadFile('./favorites/favorites.html');
+  });
+
+  ipcMain.on('tao-muon-load', async (event, arg) => {
     const result = await fetchGifs(arg);
+
     event.reply('reply-fetch-favorites', result);
   })
 
@@ -86,12 +92,20 @@ ipcMain.on('download-image', (event, arg) => {
 })
 
 ipcMain.on('download-favorites', (event, arg) => {
-  fs.ensureDir('./export', async err => {
-    console.log(err)
-    for (const image of arg) {
-      await downloadImage(image.url, `./export/gif_${image.id}.gif`)
-    }
-  })
+  dialog.showOpenDialog({ properties: ["openDirectory"] })
+    .then(path => {
+      const limit = pLimit(5);
+
+      const input = [];
+
+      for (const image of arg) {
+        input.push(limit(() => downloadImage(image.url, `${path.filePaths[0]}/gif_${image.id}.gif`)))
+      }
+
+      (async () => {
+        await Promise.all(input);
+      })();
+    })
 })
 
 async function downloadImage(url, path) {
@@ -147,5 +161,3 @@ const post = async (path) => {
 
   })
 }
-
-
