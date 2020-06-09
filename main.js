@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { fetchGifSearch, fetchGifs } = require('./app.js');
-const fs = require('fs')
+const fs = require('fs-extra')
 const Axios = require('axios')
 const https = require('https');
 const pLimit = require('p-limit');
@@ -86,15 +86,17 @@ ipcMain.on('fetch-command', async (event, arg) => {
 })
 
 //
-ipcMain.on('download-image', (event, arg) => {
-  fs.ensureDir('./images', err => {
+ipcMain.on('download-image', async (event, arg) => {
+  await fs.ensureDir('./images', err => {
     console.log(err)
     https.get(arg.url, res => res.pipe(fs.createWriteStream(`./images/gif_${arg.id}.jpg`)))
   })
+
+  dialog.showMessageBox({ message: "dowload done." })
 })
 
-ipcMain.on('download-favorites', (event, arg) => {
-  dialog.showOpenDialog({ properties: ["openDirectory"] })
+ipcMain.on('download-favorites', async (event, arg) => {
+  await dialog.showOpenDialog({ properties: ["openDirectory"] })
     .then(path => {
       console.log(path)
       if (!path.canceled) {
@@ -106,10 +108,14 @@ ipcMain.on('download-favorites', (event, arg) => {
         (async () => {
           await Promise.all(input);
         })();
+        dialog.showMessageBox({ message: "dowload done." })
       } else {
         throw new Error('open folder export...!')
+
       }
-    }).catch(err => console.log(err))
+    }).catch(err => dialog.showMessageBox({ message: err }))
+
+
 })
 
 async function downloadImage(url, path) {
