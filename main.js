@@ -95,19 +95,17 @@ ipcMain.on('download-image', async (event, arg) => {
   dialog.showMessageBox({ message: "dowload done." })
 })
 
-ipcMain.on('download-favorites', async (event, arg) => {
-  await dialog.showOpenDialog({ properties: ["openDirectory"] })
-    .then(path => {
-      console.log(path)
+ipcMain.on('download-favorites', (event, images) => {
+  dialog.showOpenDialog({ properties: ["openDirectory"] })
+    .then(async path => {
       if (!path.canceled) {
         const limit = pLimit(5);
-        const input = [];
-        for (const image of arg) {
-          input.push(limit(() => downloadImage(image.url, `${path.filePaths[0]}/gif_${image.id}.gif`)))
-        }
-        (async () => {
-          await Promise.all(input);
-        })();
+        const imagesPromise = images.map(() => {
+          limit(() => { downloadImage(image.url, `${path.filePaths[0]}/gif_${image.id}.gif`) })
+        })
+
+        await Promise.all(imagesPromise);
+
         dialog.showMessageBox({ message: "dowload done." })
       } else {
         throw new Error('open folder export...!')
@@ -125,9 +123,20 @@ async function downloadImage(url, path) {
     responseType: 'stream'
   })
 
-  response.data.pipe(fs.createWriteStream(path))
-}
+  const ws = fs.createWriteStream(path)
 
+
+
+  const statusDown = new Promise((res, rej) => {
+    ws.once('close', () => res)
+    ws.once('error', () => rej)
+  })
+
+
+  response.data.pipe(ws)
+
+  return statusDown;
+}
 
 
 function convert(input) {
