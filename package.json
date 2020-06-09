@@ -13,11 +13,8 @@
     "dependencies": {
         "axios": "^0.19.2",
         "electron": "^6.0.0",
-        "fs-extra": "^9.0.1",
+        "electron-main-fetch": "^1.0.0",
         "node-fetch": "^2.6.0",
         "p-limit": "^3.0.1"
-    },
-    "devDependencies": {
-        "electron-packager": "^14.2.1"
     }
 }

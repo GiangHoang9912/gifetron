@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { fetchGifSearch, fetchGifs } = require('./app.js');
-const fs = require('fs-extra')
+const fs = require('fs')
 const Axios = require('axios')
 const https = require('https');
 const pLimit = require('p-limit');
@@ -49,8 +49,10 @@ function createWindow() {
   ipcMain.on('upload-command', async (event, arg) => {
     dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
       .then(path => {
-        post(path);
-      })
+        if (path)
+          post(path);
+      }).catch(err => console.log(err)
+      )
   })
 }
 
@@ -94,30 +96,30 @@ ipcMain.on('download-image', (event, arg) => {
 ipcMain.on('download-favorites', (event, arg) => {
   dialog.showOpenDialog({ properties: ["openDirectory"] })
     .then(path => {
-      const limit = pLimit(5);
-
-      const input = [];
-
-      for (const image of arg) {
-        input.push(limit(() => downloadImage(image.url, `${path.filePaths[0]}/gif_${image.id}.gif`)))
+      console.log(path)
+      if (!path.canceled) {
+        const limit = pLimit(5);
+        const input = [];
+        for (const image of arg) {
+          input.push(limit(() => downloadImage(image.url, `${path.filePaths[0]}/gif_${image.id}.gif`)))
+        }
+        (async () => {
+          await Promise.all(input);
+        })();
+      } else {
+        throw new Error('open folder export...!')
       }
-
-      (async () => {
-        await Promise.all(input);
-      })();
-    })
+    }).catch(err => console.log(err))
 })
 
 async function downloadImage(url, path) {
-  const writer = fs.createWriteStream(path)
-
   const response = await Axios({
     url: url,
     method: 'GET',
     responseType: 'stream'
   })
 
-  response.data.pipe(writer)
+  response.data.pipe(fs.createWriteStream(path))
 }
 
 

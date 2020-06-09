@@ -15,21 +15,22 @@ btnFetch.addEventListener('click', (e) => {
   ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
 })
 
-textInput.addEventListener('click', (e) => {
-  e.preventDefault();
-  console.log(textInput.value)
-})
 
+let lastKeyword = '';
 
 document.querySelector('form').addEventListener('submit', (e) => {
   e.preventDefault();
-  divDisplay.innerHTML = '';
-  const txtSearch = document.querySelector('#txtSearch').value;
-  ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": true });
-})
 
-ipcRenderer.on('start-loading', (event, arg) => {
-  console.log(arg)
+  const txtSearch = document.querySelector('#txtSearch').value;
+  console.log(lastKeyword)
+  console.log(txtSearch)
+
+  if (txtSearch === lastKeyword) return;
+
+  divDisplay.innerHTML = '';
+  lastKeyword = txtSearch;
+
+  ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": true });
 })
 
 document.querySelector('#tab-favorites').addEventListener('click', (e) => {
@@ -83,7 +84,6 @@ ipcRenderer.on('reply-fetch-command', (event, arg) => {
       }
 
       img.onload = (e) => {
-        console.log(`Image ${images[j].id} ready to append`);
         divGif.style.backgroundImage = `url('${images[j].url}')`;
       }
 
