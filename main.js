@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, clipboard } = require('electron');
 const { fetchGifSearch, fetchGifs } = require('./app.js');
 const fs = require('fs-extra')
 const Axios = require('axios')
@@ -175,3 +175,4 @@ const post = async(path) => {
 
     })
 }
+

@@ -1,9 +1,10 @@
 const btnFetch = document.querySelector('#fetch_btn');
-const { ipcRenderer, dialog } = require('electron');
+const { ipcRenderer } = require('electron');
 const divDisplay = document.querySelector('.display');
-const textInput = document.querySelector('#txtSearch');
 const { allStorage } = require('../storageApi')
 const gifLoad = "https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif";
+const clipboard = require('electron-clipboard-extended')
+
 
 document.querySelector('#tab-favorites').innerText = `Favorites(${allStorage().length})`;
 
@@ -138,10 +139,20 @@ onscroll = (e) => {
 
 const observer = new IntersectionObserver(function (entries) {
   if (entries[0].isIntersecting === true) {
+    //ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
+    const txtSearch = document.querySelector('#txtSearch').value;
     ipcRenderer.send('fetch-command', { "txtSearch": txtSearch, "status": false });
-    console.log('Element is fully visible in screen');
   }
 }, { threshold: [1] });
+
+clipboard
+  .on('text-changed', () => {
+    let currentText = clipboard.readText();
+    console.log(currentText)
+    document.querySelector('#txtSearch').value = currentText;
+  })
+  .startWatching();
+
 
 
 module.exports = { allStorage };

@@ -1,6 +1,6 @@
 const API_ROOT = 'https://api.giphy.com/v1/gifs'
 const API_KEY = '4adlDmQdqYPDNjGt2C6fFxbJHxrNj9Uj'
-const fetch = require('electron-main-fetch');
+const fetch = require('node-fetch');
 
 const searchLimit = 8
 let offsetCurrent = 0
