@@ -11,7 +11,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "electron": "^9.0.0",
         "electron-clipboard-extended": "^1.1.1",
         "electron-main-fetch": "^1.0.0",
